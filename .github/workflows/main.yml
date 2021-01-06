@@ -28,17 +28,17 @@ jobs:
         with:
           dotnet-version: 3.1.100
       - name: Pack nuget package
-        run: dotnet pack  -p:PackageID=Trady.Core.Fork --configuration Release
+        run: dotnet pack  --configuration Release
       - name: Push package to nuget (Trady.Core)
         run: dotnet nuget push Trady.Core/bin/Release/Trady.Core.Fork.*.nupkg
           --api-key ${{ secrets.NUGET_API_KEY }}
           --source https://api.nuget.org/v3/index.json
           --skip-duplicate
-     # - name: Push package to nuget (Trady.Analysis)
-     #   run: dotnet nuget push Trady.Analysis/bin/Release/Trady.Analysis.*.nupkg
-     #     --api-key ${{ secrets.NUGET_DEPLOY_KEY_TRADY }}
-     #     --source https://api.nuget.org/v3/index.json
-     #     --skip-duplicate
+      - name: Push package to nuget (Trady.Analysis)
+        run: dotnet nuget push Trady.Analysis/bin/Release/Trady.Analysis.Fork*.nupkg
+          --api-key ${{ secrets.NUGET_DEPLOY_KEY_TRADY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
      # - name: Push package to nuget (Trady.Importer)
      #   run: dotnet nuget push Trady.Importer/bin/Release/Trady.Importer.*.nupkg
      #     --api-key ${{ secrets.NUGET_DEPLOY_KEY_TRADY }}
