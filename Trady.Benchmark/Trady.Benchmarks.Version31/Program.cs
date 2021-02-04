@@ -12,6 +12,7 @@ using BenchmarkDotNet.Attributes;
 using System.Collections.Generic;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Columns;
+using Trady.Analysis.Indicator;
 
 namespace Trady.Benchmarks.Version31
 {
@@ -19,7 +20,7 @@ namespace Trady.Benchmarks.Version31
     [SimpleJob()]
     public class Benchmark
     {
-        private const int _n = 100000;
+        private const int _n = 10000;
         private readonly IOhlcv[] _data;
         private readonly ITickTrade[] _tradeData;
 
@@ -221,6 +222,8 @@ namespace Trady.Benchmarks.Version31
         [Benchmark]
         public IReadOnlyList<IAnalyzableTick<decimal?>> HullMovingAverage() => _data.Hma(30);
 
+        [Benchmark]
+        public IReadOnlyList<decimal?> TripleEma() => new TripleExponentialMovingAverageByTuple(_tradeData.Select(c => c.Price), 21).Compute();
         [Benchmark]
         public IReadOnlyList<IAnalyzableTick<(decimal?, decimal?, decimal?)>> KeltnerChannels() => _data.Kc(20, 2, 10);
         [Benchmark]

@@ -115,7 +115,7 @@ namespace Trady.Analysis.Extension
             => new MovingAverageConvergenceDivergence(candles, emaPeriodCount1, emaPeriodCount2, demPeriodCount).Compute(startIndex, endIndex);
 
         public static IReadOnlyList<AnalyzableTick<decimal?>> MacdHist(this IEnumerable<IOhlcv> candles, int emaPeriodCount1, int emaPeriodCount2, int demPeriodCount, int? startIndex = null, int? endIndex = null)
-	        => new MovingAverageConvergenceDivergenceHistogram(candles, emaPeriodCount1, emaPeriodCount2, demPeriodCount).Compute(startIndex, endIndex);
+            => new MovingAverageConvergenceDivergenceHistogram(candles, emaPeriodCount1, emaPeriodCount2, demPeriodCount).Compute(startIndex, endIndex);
 
         public static IReadOnlyList<AnalyzableTick<decimal?>> Nmo(this IEnumerable<IOhlcv> candles, int periodCount, int? startIndex = null, int? endIndex = null)
             => new NetMomentumOscillator(candles, periodCount).Compute(startIndex, endIndex);
@@ -168,14 +168,14 @@ namespace Trady.Analysis.Extension
         public static IReadOnlyList<AnalyzableTick<(decimal? K, decimal? D, decimal? J)>> SlowSto(this IEnumerable<IOhlcv> candles, int periodCount, int smaPeriodCountD, int? startIndex = null, int? endIndex = null)
             => new Stochastics.Slow(candles, periodCount, smaPeriodCountD).Compute(startIndex, endIndex);
 
-		public static IReadOnlyList<AnalyzableTick<decimal?>> FastStoOsc(this IEnumerable<IOhlcv> candles, int periodCount, int smaPeriodCount, int? startIndex = null, int? endIndex = null)
-	        => new StochasticsOscillator.Fast(candles, periodCount, smaPeriodCount).Compute(startIndex, endIndex);
+        public static IReadOnlyList<AnalyzableTick<decimal?>> FastStoOsc(this IEnumerable<IOhlcv> candles, int periodCount, int smaPeriodCount, int? startIndex = null, int? endIndex = null)
+            => new StochasticsOscillator.Fast(candles, periodCount, smaPeriodCount).Compute(startIndex, endIndex);
 
-		public static IReadOnlyList<AnalyzableTick<decimal?>> FullStoOsc(this IEnumerable<IOhlcv> candles, int periodCount, int smaPeriodCountK, int smaPeriodCountD, int? startIndex = null, int? endIndex = null)
-			=> new StochasticsOscillator.Full(candles, periodCount, smaPeriodCountK, smaPeriodCountD).Compute(startIndex, endIndex);
+        public static IReadOnlyList<AnalyzableTick<decimal?>> FullStoOsc(this IEnumerable<IOhlcv> candles, int periodCount, int smaPeriodCountK, int smaPeriodCountD, int? startIndex = null, int? endIndex = null)
+            => new StochasticsOscillator.Full(candles, periodCount, smaPeriodCountK, smaPeriodCountD).Compute(startIndex, endIndex);
 
-		public static IReadOnlyList<AnalyzableTick<decimal?>> SlowStoOsc(this IEnumerable<IOhlcv> candles, int periodCount, int smaPeriodCountD, int? startIndex = null, int? endIndex = null)
-			=> new StochasticsOscillator.Slow(candles, periodCount, smaPeriodCountD).Compute(startIndex, endIndex);
+        public static IReadOnlyList<AnalyzableTick<decimal?>> SlowStoOsc(this IEnumerable<IOhlcv> candles, int periodCount, int smaPeriodCountD, int? startIndex = null, int? endIndex = null)
+            => new StochasticsOscillator.Slow(candles, periodCount, smaPeriodCountD).Compute(startIndex, endIndex);
 
         public static IReadOnlyList<AnalyzableTick<decimal?>> StochRsi(this IEnumerable<IOhlcv> candles, int periodCount, int? startIndex = null, int? endIndex = null)
             => new StochasticsRsiOscillator(candles, periodCount).Compute(startIndex, endIndex);
@@ -183,11 +183,11 @@ namespace Trady.Analysis.Extension
         public static IReadOnlyList<AnalyzableTick<decimal?>> Tr(this IEnumerable<IOhlcv> candles, int? startIndex = null, int? endIndex = null)
             => new TrueRange(candles).Compute(startIndex, endIndex);
 
-		public static IReadOnlyList<AnalyzableTick<decimal?>> Median(this IEnumerable<IOhlcv> candles, int periodCount, int? startIndex = null, int? endIndex = null)
-	        => new Median(candles, periodCount).Compute(startIndex, endIndex);
+        public static IReadOnlyList<AnalyzableTick<decimal?>> Median(this IEnumerable<IOhlcv> candles, int periodCount, int? startIndex = null, int? endIndex = null)
+            => new Median(candles, periodCount).Compute(startIndex, endIndex);
 
-		public static IReadOnlyList<AnalyzableTick<decimal?>> Percentile(this IEnumerable<IOhlcv> candles, int periodCount, decimal percent, int? startIndex = null, int? endIndex = null)
-	        => new Percentile(candles, periodCount, percent).Compute(startIndex, endIndex);
+        public static IReadOnlyList<AnalyzableTick<decimal?>> Percentile(this IEnumerable<IOhlcv> candles, int periodCount, decimal percent, int? startIndex = null, int? endIndex = null)
+            => new Percentile(candles, periodCount, percent).Compute(startIndex, endIndex);
 
         public static IReadOnlyList<AnalyzableTick<decimal?>> Sar(this IEnumerable<IOhlcv> candles, decimal step, decimal maximumStep, int? startIndex = null, int? endIndex = null)
             => new ParabolicStopAndReverse(candles, step, maximumStep).Compute(startIndex, endIndex);
@@ -206,5 +206,15 @@ namespace Trady.Analysis.Extension
 
         public static IReadOnlyList<AnalyzableTick<decimal?>> Vwap(this IEnumerable<IOhlcv> candles, int? period = null, int? startIndex = null, int? endIndex = null)
            => new VolumeWeightedAveragePrice(candles, period).Compute(startIndex, endIndex);
+        /// <summary>
+        /// Triple moving average
+        /// </summary>
+        /// <param name="candles"></param>
+        /// <param name="period"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="endIndex"></param>
+        /// <returns></returns>
+        public static IReadOnlyList<AnalyzableTick<decimal?>> Tema(this IEnumerable<IOhlcv> candles, int period, int? startIndex = null, int? endIndex = null)
+           => new TripleExponentialMovingAverage(candles, period).Compute(startIndex, endIndex);
     }
 }
