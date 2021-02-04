@@ -36,7 +36,7 @@ jobs:
           --skip-duplicate
       - name: Push package to nuget (Trady.Analysis)
         run: dotnet nuget push Trady.Analysis/bin/Release/Trady.Analysis.Fork*.nupkg
-          --api-key ${{ secrets.NUGET_DEPLOY_KEY_TRADY }}
+          --api-key ${{ secrets.NUGET_API_KEY }}
           --source https://api.nuget.org/v3/index.json
           --skip-duplicate
      # - name: Push package to nuget (Trady.Importer)
