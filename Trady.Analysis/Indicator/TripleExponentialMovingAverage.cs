@@ -36,7 +36,7 @@ namespace Trady.Analysis.Indicator
 
         public int PeriodCount { get; }
 
-        protected override decimal? ComputeByIndexImpl(IReadOnlyList<decimal?> mappedInputs, int index) => (3*_ema1[index]) - (3 * _ema2[index]) + _ema3[index];
+        protected override decimal? ComputeByIndexImpl(IReadOnlyList<decimal?> mappedInputs, int index) => 3 * (_ema1[index] - _ema2[index]) + _ema3[index];
     }
 
     public class TripleExponentialMovingAverageByTuple : TripleExponentialMovingAverage<decimal?, decimal?>
@@ -46,10 +46,10 @@ namespace Trady.Analysis.Indicator
         {
         }
 
-		public TripleExponentialMovingAverageByTuple(IEnumerable<decimal> inputs, int periodCount)
-	        : this(inputs.Cast<decimal?>().ToList(), periodCount)
-		{
-		}
+        public TripleExponentialMovingAverageByTuple(IEnumerable<decimal> inputs, int periodCount)
+            : this(inputs.Cast<decimal?>().ToList(), periodCount)
+        {
+        }
     }
 
     public class TripleExponentialMovingAverage : TripleExponentialMovingAverage<IOhlcv, AnalyzableTick<decimal?>>
