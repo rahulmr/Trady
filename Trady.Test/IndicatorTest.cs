@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,7 +28,7 @@ namespace Trady.Test
             //var candles = await yahooImporter.ImportAsync("FB");
             //File.WriteAllLines("fb.csv", candles.Select(c => $"{c.DateTime.ToString("d")},{c.Open},{c.High},{c.Low},{c.Close},{c.Volume}"));
             //return candles;
-        } 
+        }
 
         protected async Task<IEnumerable<IOhlcv>> ImportCCiIOhlcvDatasAsync()
         {
@@ -53,7 +53,13 @@ namespace Trady.Test
         //    sw.Stop();
         //    Assert.IsTrue(false, sw.ElapsedMilliseconds.ToString());
         //}
-
+        [TestMethod]
+        public async Task TestTemaByTicksAsync()
+        {
+            var candles = await ImportIOhlcvDatasAsync();
+            var result = candles.Select(c => new Trade(c.DateTime, c.Close, c.Volume, false)).Tema(9)[candles.Count() - 1];
+            Assert.IsTrue(result.Tick.Value.IsApproximatelyEquals(171.0930814920m));
+        }
         [TestMethod]
         public async Task TestNviAsync()
         {
@@ -167,24 +173,24 @@ namespace Trady.Test
             Assert.IsTrue(157.36m.IsApproximatelyEquals(results.First(r => r.DateTime == new DateTime(2017, 7, 24)).Tick.Value));
         }
 
-		[TestMethod]
-		public async Task TestMedianAsync()
-		{
-			var candles = await ImportIOhlcvDatasAsync();
+        [TestMethod]
+        public async Task TestMedianAsync()
+        {
+            var candles = await ImportIOhlcvDatasAsync();
             var result = candles.Median(10)[candles.Count() - 1];
-			Assert.IsTrue(171.8649975m.IsApproximatelyEquals(result.Tick.Value));
-		}
+            Assert.IsTrue(171.8649975m.IsApproximatelyEquals(result.Tick.Value));
+        }
 
-		[TestMethod]
-		public async Task TestPercentileAsync()
-		{
-			var candles = await ImportIOhlcvDatasAsync();
-			var result = candles.Percentile(30, 0.7m)[candles.Count() - 1];
-			Assert.IsTrue(171.3529969m.IsApproximatelyEquals(result.Tick.Value));
+        [TestMethod]
+        public async Task TestPercentileAsync()
+        {
+            var candles = await ImportIOhlcvDatasAsync();
+            var result = candles.Percentile(30, 0.7m)[candles.Count() - 1];
+            Assert.IsTrue(171.3529969m.IsApproximatelyEquals(result.Tick.Value));
 
             result = candles.Percentile(10, 0.2m)[candles.Count() - 1];
             Assert.IsTrue(170.9039978m.IsApproximatelyEquals(result.Tick.Value));
-		}
+        }
 
         [TestMethod]
         public async Task TestSmaAsync()
@@ -255,14 +261,14 @@ namespace Trady.Test
             Assert.IsTrue(5.013m.IsApproximatelyEquals(result.Tick.Value));
         }
 
-		[TestMethod]
-		public async Task TestChandlrAsync()
-		{
-			var candles = await ImportIOhlcvDatasAsync();
-			var result = candles.Chandlr(22, 3)[candles.Count() - 1];
-			Assert.IsTrue(166.47m.IsApproximatelyEquals(result.Tick.Long.Value));
-			Assert.IsTrue(172.53m.IsApproximatelyEquals(result.Tick.Short.Value));
-		}
+        [TestMethod]
+        public async Task TestChandlrAsync()
+        {
+            var candles = await ImportIOhlcvDatasAsync();
+            var result = candles.Chandlr(22, 3)[candles.Count() - 1];
+            Assert.IsTrue(166.47m.IsApproximatelyEquals(result.Tick.Long.Value));
+            Assert.IsTrue(172.53m.IsApproximatelyEquals(result.Tick.Short.Value));
+        }
 
         [TestMethod]
         public async Task TestMomentumAsync()
@@ -364,7 +370,7 @@ namespace Trady.Test
         public async Task TestHistoricalHighestHighAsync()
         {
             var candles = await ImportIOhlcvDatasAsync();
-            var result = candles.HistHighHigh()[candles.Count() - 1];   
+            var result = candles.HistHighHigh()[candles.Count() - 1];
             Assert.IsTrue(175.490005m.IsApproximatelyEquals(result.Tick.Value));
         }
 
@@ -445,13 +451,13 @@ namespace Trady.Test
             Assert.IsTrue((-0.291m).IsApproximatelyEquals(result.Tick.MacdHistogram.Value));
         }
 
-		[TestMethod]
-		public async Task TestMacdHistogramAsync()
-		{
-			var candles = await ImportIOhlcvDatasAsync();
-			var result = candles.MacdHist(12, 26, 9)[candles.Count() - 1];
+        [TestMethod]
+        public async Task TestMacdHistogramAsync()
+        {
+            var candles = await ImportIOhlcvDatasAsync();
+            var result = candles.MacdHist(12, 26, 9)[candles.Count() - 1];
             Assert.IsTrue((-0.291m).IsApproximatelyEquals(result.Tick.Value));
-		}
+        }
 
         [TestMethod]
         public async Task TestObvAsync()
@@ -518,9 +524,9 @@ namespace Trady.Test
         {
             var candles = await ImportIOhlcvDatasAsync();
             var result = candles.SlowSto(14, 3)[candles.Count() - 1];
-			Assert.IsTrue(65.22m.IsApproximatelyEquals(result.Tick.K.Value));
-			Assert.IsTrue(74.36m.IsApproximatelyEquals(result.Tick.D.Value));
-			Assert.IsTrue(46.94m.IsApproximatelyEquals(result.Tick.J.Value));
+            Assert.IsTrue(65.22m.IsApproximatelyEquals(result.Tick.K.Value));
+            Assert.IsTrue(74.36m.IsApproximatelyEquals(result.Tick.D.Value));
+            Assert.IsTrue(46.94m.IsApproximatelyEquals(result.Tick.J.Value));
         }
 
         [TestMethod]
@@ -533,29 +539,29 @@ namespace Trady.Test
             Assert.IsTrue(46.94m.IsApproximatelyEquals(result.Tick.J.Value));
         }
 
-		[TestMethod]
-		public async Task TestFastStoOscAsync()
-		{
-			var candles = await ImportIOhlcvDatasAsync();
-			var result = candles.FastStoOsc(14, 3)[candles.Count() - 1];
+        [TestMethod]
+        public async Task TestFastStoOscAsync()
+        {
+            var candles = await ImportIOhlcvDatasAsync();
+            var result = candles.FastStoOsc(14, 3)[candles.Count() - 1];
             Assert.IsTrue((-9.55m).IsApproximatelyEquals(result.Tick.Value));
-		}
+        }
 
-		[TestMethod]
-		public async Task TestSlowStoOscAsync()
-		{
-			var candles = await ImportIOhlcvDatasAsync();
-			var result = candles.SlowStoOsc(14, 3)[candles.Count() - 1];
-			Assert.IsTrue((-9.14m).IsApproximatelyEquals(result.Tick.Value));
-		}
+        [TestMethod]
+        public async Task TestSlowStoOscAsync()
+        {
+            var candles = await ImportIOhlcvDatasAsync();
+            var result = candles.SlowStoOsc(14, 3)[candles.Count() - 1];
+            Assert.IsTrue((-9.14m).IsApproximatelyEquals(result.Tick.Value));
+        }
 
-		[TestMethod]
-		public async Task TestFullStoOscAsync()
-		{
-			var candles = await ImportIOhlcvDatasAsync();
-			var result = candles.FullStoOsc(14, 3, 3)[candles.Count() - 1];
-			Assert.IsTrue((-9.14m).IsApproximatelyEquals(result.Tick.Value));
-		}
+        [TestMethod]
+        public async Task TestFullStoOscAsync()
+        {
+            var candles = await ImportIOhlcvDatasAsync();
+            var result = candles.FullStoOsc(14, 3, 3)[candles.Count() - 1];
+            Assert.IsTrue((-9.14m).IsApproximatelyEquals(result.Tick.Value));
+        }
 
         [TestMethod]
         public async Task TestWmaAsync()
@@ -595,16 +601,16 @@ namespace Trady.Test
         public async Task TestVwap_IsAccurateAsync()
         {
             var candles = await ImportIOhlcvDatasAsync("NFLX_5m_1_27_2019.csv");
-            var selected = candles.Where(x => x.DateTime <= new DateTimeOffset(2019, 1, 25, 15, 15, 00, new TimeSpan(-6, 0, 0))); 
+            var selected = candles.Where(x => x.DateTime <= new DateTimeOffset(2019, 1, 25, 15, 15, 00, new TimeSpan(-6, 0, 0)));
             var result = selected.Vwap()[selected.Count() - 1].Tick;
-            Assert.IsTrue(335.67m.IsApproximatelyEquals(result.Value));  
+            Assert.IsTrue(335.67m.IsApproximatelyEquals(result.Value));
         }
 
         [TestMethod]
         public async Task TestVwap_CloseIsAboveVwapAsync()
         {
             var candles = await ImportIOhlcvDatasAsync("NFLX_5m_1_27_2019.csv");
-            var selected = candles.Where(x => x.DateTime <= new DateTimeOffset(2019, 1, 25, 09, 40, 00, new TimeSpan(-6, 0, 0)));  
+            var selected = candles.Where(x => x.DateTime <= new DateTimeOffset(2019, 1, 25, 09, 40, 00, new TimeSpan(-6, 0, 0)));
             var result = selected.Vwap()[selected.Count() - 1].Tick;
             var close = selected.Last().Close;
             Assert.IsTrue(330.32m.IsApproximatelyEquals(result.Value));
@@ -615,7 +621,7 @@ namespace Trady.Test
         public async Task TestVwap_CloseIsBelowVwapAsync()
         {
             var candles = await ImportIOhlcvDatasAsync("NFLX_5m_1_27_2019.csv");
-            var selected = candles.Where(x => x.DateTime <= new DateTimeOffset(2019, 1, 25, 09, 30, 00, new TimeSpan(-6, 0, 0))); 
+            var selected = candles.Where(x => x.DateTime <= new DateTimeOffset(2019, 1, 25, 09, 30, 00, new TimeSpan(-6, 0, 0)));
             var result = selected.Vwap()[selected.Count() - 1].Tick;
             var close = selected.Last().Close;
             Assert.IsTrue(329.68m.IsApproximatelyEquals(result.Value));

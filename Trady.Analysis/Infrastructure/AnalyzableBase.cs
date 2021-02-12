@@ -28,9 +28,9 @@ namespace Trady.Analysis.Infrastructure
         protected AnalyzableBase(IEnumerable<TInput> inputs, Func<TInput, TMappedInput> inputMapper)
         {
             _isTInputIOhlcvData = typeof(IOhlcv).IsAssignableFrom(typeof(TInput));
-            _isInputTickTradesData= typeof(ITickTrade).IsAssignableFrom(typeof(TInput));
+            _isInputTickTradesData = typeof(ITickTrade).IsAssignableFrom(typeof(TInput));
             _isTOutputAnalyzableTick = typeof(IAnalyzableTick<TOutputToMap>).IsAssignableFrom(typeof(TOutput));
-            if (_isTInputIOhlcvData != _isTOutputAnalyzableTick)
+            if (_isTInputIOhlcvData != _isTOutputAnalyzableTick && _isInputTickTradesData != _isTOutputAnalyzableTick)
             {
                 throw new ArgumentException("TInput, TOutput not matched!");
             }
@@ -47,9 +47,9 @@ namespace Trady.Analysis.Infrastructure
             Cache = new Dictionary<int, TOutputToMap>();
         }
 
-		public TOutput this[int index] => Map(ComputeByIndex, index);
+        public TOutput this[int index] => Map(ComputeByIndex, index);
 
-		public IReadOnlyList<TOutput> Compute(int? startIndex = null, int? endIndex = null) => Compute(i => this[i], startIndex, endIndex);
+        public IReadOnlyList<TOutput> Compute(int? startIndex = null, int? endIndex = null) => Compute(i => this[i], startIndex, endIndex);
 
         public IReadOnlyList<TOutput> Compute(IEnumerable<int> indexes) => Compute(i => this[i], indexes);
 
@@ -57,17 +57,17 @@ namespace Trady.Analysis.Infrastructure
 
         public (TOutput Prev, TOutput Current, TOutput Next) ComputeNeighbour(int index) => Compute(i => this[i], index);
 
-		protected abstract TOutputToMap ComputeByIndexImpl(IReadOnlyList<TMappedInput> mappedInputs, int index);
+        protected abstract TOutputToMap ComputeByIndexImpl(IReadOnlyList<TMappedInput> mappedInputs, int index);
 
         protected virtual int GetComputeStartIndex(int? startIndex) => startIndex ?? 0;
 
         protected virtual int GetComputeEndIndex(int? endIndex) => endIndex ?? _mappedInputs.Count - 1;
 
-		protected IDictionary<int, TOutputToMap> Cache { get; }
+        protected IDictionary<int, TOutputToMap> Cache { get; }
 
-		#region IAnalyzable implementation
+        #region IAnalyzable implementation
 
-		IEnumerable IAnalyzable.Compute(int? startIndex, int? endIndex) => Compute(startIndex, endIndex);
+        IEnumerable IAnalyzable.Compute(int? startIndex, int? endIndex) => Compute(startIndex, endIndex);
 
         IEnumerable IAnalyzable.Compute(IEnumerable<int> indexes) => Compute(indexes);
 
@@ -79,14 +79,14 @@ namespace Trady.Analysis.Infrastructure
 
         #region internal protected
 
-		internal protected IReadOnlyList<TOutput> Compute(Func<int, TOutput> outputFunc, int? startIndex, int? endIndex)
-		{
-			int computedStartIndex = GetComputeStartIndex(startIndex);
-			int computedEndIndex = GetComputeEndIndex(endIndex);
+        internal protected IReadOnlyList<TOutput> Compute(Func<int, TOutput> outputFunc, int? startIndex, int? endIndex)
+        {
+            int computedStartIndex = GetComputeStartIndex(startIndex);
+            int computedEndIndex = GetComputeEndIndex(endIndex);
             return Enumerable.Range(computedStartIndex, computedEndIndex - computedStartIndex + 1).Select(outputFunc).ToList();
-		}
+        }
 
-		internal protected IReadOnlyList<TOutput> Compute(Func<int, TOutput> outputFunc, IEnumerable<int> indexes) => indexes.Select(outputFunc).ToList();
+        internal protected IReadOnlyList<TOutput> Compute(Func<int, TOutput> outputFunc, IEnumerable<int> indexes) => indexes.Select(outputFunc).ToList();
 
         // Can only get in-range values from IchimokuCloud
         internal protected (TOutput Prev, TOutput Current, TOutput Next) Compute(Func<int, TOutput> outputFunc, int index)
@@ -98,18 +98,18 @@ namespace Trady.Analysis.Infrastructure
             return (prev, current, next);
         }
 
-		internal protected TOutput Map(Func<int, TOutputToMap> otmFunc, int index)
-		{
-			dynamic outputToMap = otmFunc(index);
+        internal protected TOutput Map(Func<int, TOutputToMap> otmFunc, int index)
+        {
+            dynamic outputToMap = otmFunc(index);
             var datetime = index >= 0 && index < _mappedInputs.Count ? (_mappedDateTimes?[index] ?? default(DateTime?)) : default(DateTime?);
-			return _isTOutputAnalyzableTick ? AnalyzableTickMapper(datetime, outputToMap) : outputToMap;
+            return _isTOutputAnalyzableTick ? AnalyzableTickMapper(datetime, outputToMap) : outputToMap;
 
-			TOutput AnalyzableTickMapper(DateTimeOffset? d, TOutputToMap otm)
+            TOutput AnalyzableTickMapper(DateTimeOffset? d, TOutputToMap otm)
             {
                 Type concreteType = _isTOutputAnalyzableTick ? typeof(AnalyzableTick<TOutputToMap>) : typeof(TOutput);
                 return (TOutput)concreteType.GetConstructors().First().Invoke(new object[] { d, otm });
             }
-		}
+        }
 
         protected internal TOutputToMap ComputeByIndex(int index) => Cache.GetOrAdd(index, i => ComputeByIndexImpl(_mappedInputs, i));
 
