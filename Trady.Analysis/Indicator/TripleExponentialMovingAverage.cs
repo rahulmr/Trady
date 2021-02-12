@@ -20,7 +20,6 @@ namespace Trady.Analysis.Indicator
                 Smoothing.Ema(periodCount),
                 inputs.Count());
 
-
             var _ema1Result = _ema1.Compute();
             _ema2 = new GenericMovingAverage(i => _ema1Result.ElementAt(i),
                 Smoothing.Ema(periodCount),
@@ -59,4 +58,12 @@ namespace Trady.Analysis.Indicator
         {
         }
     }
+    public class TripleExponentialMovingAverageByTick : TripleExponentialMovingAverage<ITickTrade, AnalyzableTick<decimal?>>
+    {
+        public TripleExponentialMovingAverageByTick(IEnumerable<ITickTrade> inputs, int periodCount)
+            : base(inputs, i => i.Price, periodCount)
+        {
+        }
+    }
+    
 }

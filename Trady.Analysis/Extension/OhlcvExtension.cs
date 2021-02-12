@@ -68,6 +68,8 @@ namespace Trady.Analysis.Extension
 
         public static IReadOnlyList<AnalyzableTick<decimal?>> Ema(this IEnumerable<IOhlcv> candles, int periodCount, int? startIndex = null, int? endIndex = null)
             => new ExponentialMovingAverage(candles, periodCount).Compute(startIndex, endIndex);
+        public static IReadOnlyList<AnalyzableTick<decimal?>> Tema(this IEnumerable<IOhlcv> candles, int periodCount, int? startIndex = null, int? endIndex = null)
+          => new TripleExponentialMovingAverage(candles, periodCount).Compute(startIndex, endIndex);
 
         public static IReadOnlyList<AnalyzableTick<decimal?>> EmaOsc(this IEnumerable<IOhlcv> candles, int periodCount1, int periodCount2, int? startIndex = null, int? endIndex = null)
             => new ExponentialMovingAverageOscillator(candles, periodCount1, periodCount2).Compute(startIndex, endIndex);

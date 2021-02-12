@@ -20,7 +20,7 @@ namespace Trady.Analysis.Infrastructure
     /// <typeparam name="TOutput">Target (Mapped) output type</typeparam>
     public abstract class AnalyzableBase<TInput, TMappedInput, TOutputToMap, TOutput> : IAnalyzable<TOutput>
     {
-        private readonly bool _isTInputIOhlcvData, _isTOutputAnalyzableTick;
+        private readonly bool _isTInputIOhlcvData, _isTOutputAnalyzableTick, _isInputTickTradesData;
 
         internal protected readonly IReadOnlyList<TMappedInput> _mappedInputs;
         private readonly IReadOnlyList<DateTimeOffset> _mappedDateTimes;
@@ -28,6 +28,7 @@ namespace Trady.Analysis.Infrastructure
         protected AnalyzableBase(IEnumerable<TInput> inputs, Func<TInput, TMappedInput> inputMapper)
         {
             _isTInputIOhlcvData = typeof(IOhlcv).IsAssignableFrom(typeof(TInput));
+            _isInputTickTradesData= typeof(ITickTrade).IsAssignableFrom(typeof(TInput));
             _isTOutputAnalyzableTick = typeof(IAnalyzableTick<TOutputToMap>).IsAssignableFrom(typeof(TOutput));
             if (_isTInputIOhlcvData != _isTOutputAnalyzableTick)
             {
@@ -39,7 +40,10 @@ namespace Trady.Analysis.Infrastructure
             {
                 _mappedDateTimes = inputs.Cast<IOhlcv>().Select(c => c.DateTime).ToList();
             }
-
+            if (_isInputTickTradesData)
+            {
+                _mappedDateTimes = inputs.Cast<ITickTrade>().Select(c => c.DateTime).ToList();
+            }
             Cache = new Dictionary<int, TOutputToMap>();
         }
 

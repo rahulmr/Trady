@@ -24,6 +24,7 @@ namespace Trady.Analysis.Indicator
         public int PeriodCount { get; }
 
         protected override decimal? ComputeByIndexImpl(IReadOnlyList<decimal?> mappedInputs, int index) => _ema[index];
+        
     }
 
     public class ExponentialMovingAverageByTuple : ExponentialMovingAverage<decimal?, decimal?>
