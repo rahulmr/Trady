@@ -68,6 +68,7 @@ namespace Trady.Analysis.Extension
 
         public static IReadOnlyList<AnalyzableTick<decimal?>> Ema(this IEnumerable<IOhlcv> candles, int periodCount, int? startIndex = null, int? endIndex = null)
             => new ExponentialMovingAverage(candles, periodCount).Compute(startIndex, endIndex);
+
         public static IReadOnlyList<AnalyzableTick<decimal?>> Tema(this IEnumerable<IOhlcv> candles, int periodCount, int? startIndex = null, int? endIndex = null)
           => new TripleExponentialMovingAverage(candles, periodCount).Compute(startIndex, endIndex);
 
@@ -208,15 +209,6 @@ namespace Trady.Analysis.Extension
 
         public static IReadOnlyList<AnalyzableTick<decimal?>> Vwap(this IEnumerable<IOhlcv> candles, int? period = null, int? startIndex = null, int? endIndex = null)
            => new VolumeWeightedAveragePrice(candles, period).Compute(startIndex, endIndex);
-        /// <summary>
-        /// Triple moving average
-        /// </summary>
-        /// <param name="candles"></param>
-        /// <param name="period"></param>
-        /// <param name="startIndex"></param>
-        /// <param name="endIndex"></param>
-        /// <returns></returns>
-        public static IReadOnlyList<AnalyzableTick<decimal?>> Tema(this IEnumerable<IOhlcv> candles, int period, int? startIndex = null, int? endIndex = null)
-           => new TripleExponentialMovingAverage(candles, period).Compute(startIndex, endIndex);
+
     }
 }
